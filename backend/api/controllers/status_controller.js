@@ -1,6 +1,7 @@
 'use strict';
 
 var qaMockData = {
+    domain_name: 'QA',
     tickets: [
         {
             branch_name: 'dio-20-dylan-you-better-get-that-ui-lookin-mighty-fine',
@@ -31,6 +32,7 @@ var qaMockData = {
 };
 
 var stagingMockData = {
+    domain_name: 'Staging',
     tickets: [
         {
             branch_name: 'dio-20-dylan-you-better-get-that-ui-lookin-mighty-fine',
@@ -62,10 +64,11 @@ var stagingMockData = {
 
 exports.get_all_environment_status = function(req, res) {
     return res.json(
-        {
-            qa_status: qaMockData,
-            staging_status: stagingMockData
-        }
+
+        [
+            qaMockData,
+            stagingMockData
+        ]
     );
 }
 
