@@ -166,7 +166,7 @@ function getTicketArrayFromStatuses(statuses) {
         var statusToAdd = {
             "name": status.service_name,
             "deployment_date": status.deployment_date,
-            "deployed_by": status.who_deployed,
+            "deployed_by": status.deployment_user,
             "branch": status.branch_name
         };
         finalStatuses.forEach(function(existingStatus) {
