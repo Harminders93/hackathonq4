@@ -1,5 +1,8 @@
 'use strict';
 
+var mongoose = require('mongoose'),
+    EnvironmentStatus = mongoose.model('EnvironmentStatus');
+
 var qaMockData = {
     domain_name: 'QA',
     tickets: [
@@ -64,7 +67,6 @@ var stagingMockData = {
 
 exports.get_all_environment_status = function(req, res) {
     return res.json(
-
         [
             qaMockData,
             stagingMockData
@@ -81,3 +83,39 @@ exports.get_status = function(req, res) {
         return res.json('Invalid environment name: ' + req.params.environmentName)
     }
 };
+
+exports.add_new_status = function(req, res) {
+    var newEnvironmentStatus = new EnvironmentStatus(req.body);
+
+    EnvironmentStatus.find(
+        {
+            service_name: newEnvironmentStatus.service_name,
+            domain_name: newEnvironmentStatus.domain_name
+        },
+        function(err, environmentStatus) {
+            // we should update existing row if it exists
+            if (environmentStatus !== null) {
+                EnvironmentStatus.update(
+                    {
+                        service_name: newEnvironmentStatus.service_name,
+                        domain_name: newEnvironmentStatus.domain_name
+                    },
+                    {
+                        branch_name: newEnvironmentStatus.branch_name,
+                        deployment_user: newEnvironmentStatus.deployment_user,
+                        deployment_date: newEnvironmentStatus.deployment_date
+                    },
+                    function(err, environmentStatus) {
+
+                    }
+                );
+            } else {
+                EnvironmentStatus.save(function(err, environmentStatus) {
+                    if (err)
+                        res.send(err);
+                    res.json(environmentStatus);
+                });
+            }
+        }
+    );
+}

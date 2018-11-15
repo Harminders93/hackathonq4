@@ -1,9 +1,22 @@
 var express = require('express'),
     app = express(),
-    port = process.env.PORT || 5002;
+    mongoose = require('mongoose'),
+    Status = require('./api/models/status_model'),
+    port = process.env.PORT || 5002,
+    cors = require('cors')
+    bodyParser = require('body-parser');
 
-var routes = require('./api/routes/status_routes'); //importing route
-routes(app); //register the route
+// mongoose instance connection url connection
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/EnvironmentStatusDb');
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use(cors())
+
+var routes = require('./api/routes/status_routes');
+routes(app);
 
 app.listen(port);
 
