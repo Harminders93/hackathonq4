@@ -86,16 +86,18 @@ exports.get_status = function(req, res) {
 
 exports.add_new_status = function(req, res) {
     var newEnvironmentStatus = new EnvironmentStatus(req.body);
-
+    var environmentStatusInDb = null;
     EnvironmentStatus.find(
         {
             service_name: newEnvironmentStatus.service_name,
             domain_name: newEnvironmentStatus.domain_name
         },
         function(err, environmentStatus) {
+            console.log(environmentStatus);
             // we should update existing row if it exists
-            if (environmentStatus !== null) {
-                EnvironmentStatus.update(
+            if (environmentStatus.length > 0) {
+                console.log("Updating...");
+                EnvironmentStatus.updateOne(
                     {
                         service_name: newEnvironmentStatus.service_name,
                         domain_name: newEnvironmentStatus.domain_name
@@ -106,14 +108,16 @@ exports.add_new_status = function(req, res) {
                         deployment_date: newEnvironmentStatus.deployment_date
                     },
                     function(err, environmentStatus) {
-
+                        if (err)
+                            res.send(err);
+                        res.json("Successfully saved the status of {" + newEnvironmentStatus.service_name + "} on the {" + newEnvironmentStatus.domain_name + "} domain.");
                     }
                 );
             } else {
-                EnvironmentStatus.save(function(err, environmentStatus) {
+                newEnvironmentStatus.save(function(err, environmentStatus) {
                     if (err)
                         res.send(err);
-                    res.json(environmentStatus);
+                    res.json("Successfully saved the status of {" + newEnvironmentStatus.service_name + "} on the {" + newEnvironmentStatus.domain_name + "} domain.");
                 });
             }
         }
