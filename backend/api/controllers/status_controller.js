@@ -84,9 +84,84 @@ exports.get_status = function(req, res) {
     }
 };
 
+
+exports.get_full_status = function(req, res) {
+    EnvironmentStatus.find({},
+        {
+            domain_name: 1,
+            deployment_user: 1,
+            service_name: 1,
+            branch_name: 1,
+            deployment_date: 1,
+            _id: 0
+        }, function(err, environmentStatuses) {
+            if (err) {
+                res.send(err);
+            }
+
+            var qaStatuses = environmentStatuses.filter(function(element) {
+                return element.domain_name === 'qa';
+            });
+
+            qaStatuses = getTicketArrayFromStatuses(qaStatuses);
+
+            var stagingStatuses = environmentStatuses.filter(function(element) {
+               return element.domain_name === 'staging';
+            });
+
+            stagingStatuses = getTicketArrayFromStatuses(stagingStatuses);
+
+            var finalResponse = [
+                {
+                    domain_name: 'QA',
+                    tickets: qaStatuses
+                },
+                {
+                    domain_name: 'Staging',
+                    tickets: stagingStatuses
+                }
+            ]
+
+            res.json(finalResponse);
+
+    });
+};
+
+function getTicketArrayFromStatuses(statuses) {
+    var finalStatuses = [];
+
+    statuses.forEach(function(status) {
+        var isExisting = false;
+        var statusToAdd = {
+            "name": status.service_name,
+            "deployment_date": status.deployment_date,
+            "who_deployed": status.who_deployed,
+        };
+        finalStatuses.forEach(function(existingStatus) {
+           if (existingStatus.name === status.branch_name) {
+               existingStatus.services.push(statusToAdd);
+               isExisting = true;
+           }
+        });
+
+        if (!isExisting) {
+            finalStatuses.push(
+                {
+                    "name": status.branch_name,
+                    "services": [
+                        statusToAdd
+                    ]
+                }
+            );
+        }
+
+    });
+
+    return finalStatuses;
+}
+
 exports.add_new_status = function(req, res) {
     var newEnvironmentStatus = new EnvironmentStatus(req.body);
-    var environmentStatusInDb = null;
     EnvironmentStatus.find(
         {
             service_name: newEnvironmentStatus.service_name,
