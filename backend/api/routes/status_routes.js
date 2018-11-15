@@ -10,6 +10,9 @@ module.exports = function(app) {
     app.route('/full-status')
         .get(statusController.get_full_status);
 
+    app.route('/full-status/:environmentName')
+        .get(statusController.get_environment_status);
+
     // Returns the status of all environments
     app.route('/status/:environmentName')
         .get(statusController.get_status);

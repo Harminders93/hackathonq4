@@ -84,6 +84,33 @@ exports.get_status = function(req, res) {
     }
 };
 
+exports.get_environment_status = function(req, res) {
+    var environmentNameInLower = req.params.environmentName.toLowerCase();
+    if (environmentNameInLower === "qa" || environmentNameInLower === "staging") {
+        EnvironmentStatus.find(
+            {
+                domain_name: environmentNameInLower
+            },
+            {
+                domain_name: 1,
+                deployment_user: 1,
+                service_name: 1,
+                branch_name: 1,
+                deployment_date: 1,
+                _id: 0
+            }, function(err, environmentStatuses) {
+                if (err) {
+                    res.send(err);
+                }
+                res.json({
+                    name: req.params.environmentName,
+                    tickets: getTicketArrayFromStatuses(environmentStatuses)
+                });
+        });
+    } else {
+        return res.json('Invalid environment name: ' + req.params.environmentName);
+    }
+};
 
 exports.get_full_status = function(req, res) {
     EnvironmentStatus.find({},
@@ -113,11 +140,11 @@ exports.get_full_status = function(req, res) {
 
             var finalResponse = [
                 {
-                    domain_name: 'QA',
+                    name: 'QA',
                     tickets: qaStatuses
                 },
                 {
-                    domain_name: 'Staging',
+                    name: 'Staging',
                     tickets: stagingStatuses
                 }
             ]
@@ -135,7 +162,7 @@ function getTicketArrayFromStatuses(statuses) {
         var statusToAdd = {
             "name": status.service_name,
             "deployment_date": status.deployment_date,
-            "who_deployed": status.who_deployed,
+            "deployed_by": status.who_deployed,
         };
         finalStatuses.forEach(function(existingStatus) {
            if (existingStatus.name === status.branch_name) {
