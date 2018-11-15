@@ -1,20 +1,80 @@
 'use strict';
 
-var mockData = {
-    web: {
-        branch: 'dio-20-dylan-you-better-get-that-ui-lookin-mighty-fine',
-        deployment_date: '2018-11-15T16:25:56Z',
-        who_deployed: 'Ya Boy DJ'
-    },
-    java_services: {
-        data_export: {
-            branch: 'dio-230-something',
-            deployment_date: '2018-11-15T16:25:56Z',
-            who_deployed: 'Ya Boy Eric Kiang'
+var qaMockData = {
+    tickets: [
+        {
+            branch_name: 'dio-20-dylan-you-better-get-that-ui-lookin-mighty-fine',
+            services: [
+                {
+                    name: "web-qa",
+                    deployment_date: "2018-11-15T16:25:56Z",
+                    who_deployed: "Lucky 'King Snake' Singh"
+                },
+                {
+                    name: "data-export",
+                    deployment_date: "2018-11-15T16:25:56Z",
+                    who_deployed: "Dylan 'Sucks at SC6' Karten"
+                }
+            ]
+        },
+        {
+            branch_name: 'master',
+            services: [
+                {
+                    name: "publisher",
+                    deployment_date: "2018-11-15T16:25:56Z",
+                    who_deployed: "Ya boy DJ"
+                }
+            ]
         }
-    }
+    ]
 };
 
+var stagingMockData = {
+    tickets: [
+        {
+            branch_name: 'dio-20-dylan-you-better-get-that-ui-lookin-mighty-fine',
+            services: [
+                {
+                    name: "web-qa",
+                    deployment_date: "2018-11-15T16:25:56Z",
+                    who_deployed: "Lucky 'King Snake' Singh"
+                },
+                {
+                    name: "data-export",
+                    deployment_date: "2018-11-15T16:25:56Z",
+                    who_deployed: "Dylan 'Sucks at SC6' Karten"
+                }
+            ]
+        },
+        {
+            branch_name: 'master',
+            services: [
+                {
+                    name: "publisher",
+                    deployment_date: "2018-11-15T16:25:56Z",
+                    who_deployed: "Ya boy DJ"
+                }
+            ]
+        }
+    ]
+};
+
+exports.get_all_environment_status = function(req, res) {
+    return res.json(JSON.stringify(
+        {
+            qa_status: qaMockData,
+            staging_status: stagingMockData
+        }
+    ));
+}
+
 exports.get_status = function(req, res) {
-    return res.json(JSON.stringify(mockData));
+     if (req.params.environmentName.toLowerCase() === "qa") {
+        return res.json(JSON.stringify(qaMockData));
+    } else if (req.params.environmentName.toLowerCase() === "staging") {
+        return res.json(JSON.stringify(stagingMockData));
+    } else {
+        return res.json('Invalid environment name: ' + req.params.environmentName)
+    }
 };
