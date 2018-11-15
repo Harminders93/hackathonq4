@@ -61,19 +61,19 @@ var stagingMockData = {
 };
 
 exports.get_all_environment_status = function(req, res) {
-    return res.json(JSON.stringify(
+    return res.json(
         {
             qa_status: qaMockData,
             staging_status: stagingMockData
         }
-    ));
+    );
 }
 
 exports.get_status = function(req, res) {
      if (req.params.environmentName.toLowerCase() === "qa") {
-        return res.json(JSON.stringify(qaMockData));
+        return res.json(qaMockData);
     } else if (req.params.environmentName.toLowerCase() === "staging") {
-        return res.json(JSON.stringify(stagingMockData));
+        return res.json(stagingMockData);
     } else {
         return res.json('Invalid environment name: ' + req.params.environmentName)
     }
