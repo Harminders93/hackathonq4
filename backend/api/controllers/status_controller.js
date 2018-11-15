@@ -159,13 +159,18 @@ function getTicketArrayFromStatuses(statuses) {
 
     statuses.forEach(function(status) {
         var isExisting = false;
+
+        // Get ticket number
+        var statusTicketNumber = getTicketNumber(status.branch_name);
+
         var statusToAdd = {
             "name": status.service_name,
             "deployment_date": status.deployment_date,
             "deployed_by": status.who_deployed,
+            "branch": status.branch_name
         };
         finalStatuses.forEach(function(existingStatus) {
-           if (existingStatus.name === status.branch_name) {
+           if (existingStatus.name === statusTicketNumber) {
                existingStatus.services.push(statusToAdd);
                isExisting = true;
            }
@@ -174,7 +179,7 @@ function getTicketArrayFromStatuses(statuses) {
         if (!isExisting) {
             finalStatuses.push(
                 {
-                    "name": status.branch_name,
+                    "name": statusTicketNumber,
                     "services": [
                         statusToAdd
                     ]
@@ -187,6 +192,11 @@ function getTicketArrayFromStatuses(statuses) {
     return finalStatuses;
 }
 
+function getTicketNumber(branchName) {
+    var words = branchName.split('-');
+    return words[0].toUpperCase() + '-' + words[1];
+}
+
 exports.add_new_status = function(req, res) {
     var newEnvironmentStatus = new EnvironmentStatus(req.body);
     EnvironmentStatus.find(
@@ -195,10 +205,8 @@ exports.add_new_status = function(req, res) {
             domain_name: newEnvironmentStatus.domain_name
         },
         function(err, environmentStatus) {
-            console.log(environmentStatus);
             // we should update existing row if it exists
             if (environmentStatus.length > 0) {
-                console.log("Updating...");
                 EnvironmentStatus.updateOne(
                     {
                         service_name: newEnvironmentStatus.service_name,
