@@ -267,7 +267,7 @@ exports.handle_slack_message = function(req, res, next) {
                     response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
 
                     var request = require('request');
-                    token = 'Bearer' + token;
+                    token = 'Bearer' + token.token;
                     console.log(token);
                     request({
                         uri: 'https://slack.com/api/chat.postMessage',
