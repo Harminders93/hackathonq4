@@ -248,7 +248,7 @@ exports.handle_slack_message = function(req, res, next) {
         token = token[0];
 
         if (payload.event !== undefined) {
-          res.json({ok:true});
+            res.status(200).end();
             if (payload.event.type === 'message' && payload.event.text !== '') {
                 var message = payload.event.text.toLowerCase();
                 if (message.includes("qa") || message.includes("staging")) {
