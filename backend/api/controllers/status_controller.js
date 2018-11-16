@@ -242,7 +242,7 @@ exports.handle_slack_message = function(req, res, next) {
     var response_text = '';
 
     if (payload.event.type === 'message') {
-        var message = payload.text.toLowerCase();
+        var message = payload.event.text.toLowerCase();
         if (message.includes("qa") || message.includes("staging")) {
             if (message.includes("free") || message.includes("available") || message.includes("using")) {
                 response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
