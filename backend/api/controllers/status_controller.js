@@ -252,6 +252,6 @@ exports.handle_slack_message = function(req, res, next) {
     // Respond to this event with HTTP 200 status
     res.json({
         challenge: payload.challenge,
-        responseMessage: response_text
+        response_text: response_text
     });
 }
