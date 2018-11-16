@@ -148,23 +148,24 @@ exports.get_full_status = function(req, res) {
               {
                 method: 'POST',
                 url: 'https://tools.crowdtwist.com/issues/rest/auth/1/session', 
-                json: {username:'dkarten', password:'wYXvQ5tz6VdB2GQ$JrAJ'}
+                json: {username:'', password:''}
               }, function(err, response, body) {
                   jiraCookie = body.session.name+'='+body.session.value;
                   var promises = [];
-                  var numQaTix = qaTickets.length;
-                  for (var i=0; i<numQaTix; i++) {
-                    var ticket = qaTickets[i];
-                    promises.push(getTicketStatus(ticket, jiraCookie));  
-                  }
+                    if (!err) {
+                      var numQaTix = qaTickets.length;
+                    for (var i=0; i<numQaTix; i++) {
+                      var ticket = qaTickets[i];
+                      promises.push(getTicketStatus(ticket, jiraCookie));  
+                    }
 
-                  var numStagingTix = stagingTickets.length;
-                  for (var i=0; i<numStagingTix; i++) {
-                    var ticket = stagingTickets[i];
-                    promises.push(getTicketStatus(ticket, jiraCookie));  
+                    var numStagingTix = stagingTickets.length;
+                    for (var i=0; i<numStagingTix; i++) {
+                      var ticket = stagingTickets[i];
+                      promises.push(getTicketStatus(ticket, jiraCookie));  
+                    }
                   }
-
-                  console.log(promises);
+                  
                   q.all(promises).then(function(data) {
                     console.log('all promises resolved!');
                     var finalResponse = [
