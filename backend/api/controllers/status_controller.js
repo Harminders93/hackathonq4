@@ -294,9 +294,10 @@ exports.handle_slack_message = function(req, res, next) {
                     }
                 }
             }
+        } else {
+            res.json({
+                challenge: payload.challenge,
+            });
         }
-        res.json({
-            challenge: payload.challenge,
-        });
     });
 }
