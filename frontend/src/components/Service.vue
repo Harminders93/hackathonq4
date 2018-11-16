@@ -47,11 +47,11 @@
   }
 
   .resolved {
-    background: green;
+    background: #63f9638f;
   }
 
   .rejected {
-    background: red;
+    background: #ff59597d;
   }
 </style>
 
