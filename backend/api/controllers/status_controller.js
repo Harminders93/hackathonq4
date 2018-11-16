@@ -268,12 +268,13 @@ exports.handle_slack_message = function(req, res, next) {
                 response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
 
                 var request = require('request');
-
+                token = 'Bearer' + token;
+                console.log(token);
                 request({
                     uri: 'https://slack.com/api/chat.postMessage',
                     headers: {
                         'Content-Type': 'application/json; charset=utf-8',
-                        'Authorization': 'Bearer ' + token
+                        'Authorization': token
                     },
                     body: JSON.stringify({
                         text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
@@ -286,6 +287,7 @@ exports.handle_slack_message = function(req, res, next) {
                         console.log(err);
                     }
                     console.log('we GOOD!');
+                    console.log(body);
                 });
             }
         }
