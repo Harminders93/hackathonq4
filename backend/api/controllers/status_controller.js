@@ -240,9 +240,9 @@ exports.handle_slack_message = function(req, res, next) {
     // Respond to this event with HTTP 200 status
     res.sendStatus(200);
     var response_text = '';
-    if (payload.event.type === "message") {
-        if (payload.event.text.toLowerCase().includes("qa")) {
-            if (payload.event.text.toLowerCase().includes("free") || payload.event.text.toLowerCase().includes("using") || payload.event.text.toLowerCase().includes("available")) {
+    if (payload.type === "message") {
+        if (payload.text.toLowerCase().includes("qa")) {
+            if (payload.text.toLowerCase().includes("free") || payload.text.toLowerCase().includes("using") || payload.text.toLowerCase().includes("available")) {
                 response_text = "Click here to find out - https://is-qa-free.herokuapp.com/";
             }
         }
