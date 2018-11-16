@@ -277,7 +277,7 @@ exports.handle_slack_message = function(req, res, next) {
                         },
                         body: JSON.stringify({
                             text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
-                            channel: payload.channel
+                            channel: payload.event.channel
                         }),
                         method: 'POST'
                     }, function (err, res, body) {
