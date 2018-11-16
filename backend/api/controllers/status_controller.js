@@ -249,6 +249,8 @@ exports.handle_slack_message = function(req, res, next) {
     var payload = req.body;
     console.log(payload);
 
+    res.sendStatus(200);
+
     var response_text = '';
 
     var token = '';
@@ -289,7 +291,6 @@ exports.handle_slack_message = function(req, res, next) {
                             console.log('we GOOD!');
                             console.log(body);
 
-                            res.json({ok:true});
 
                             // Respond to this event with HTTP 200 status
                         });
