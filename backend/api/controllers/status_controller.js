@@ -248,14 +248,12 @@ exports.handle_slack_message = function(req, res, next) {
         token = token[0];
 
         if (payload.event !== undefined) {
-            res.status(200).end();
             if (payload.event.type === 'message' && payload.event.text !== '') {
                 var message = payload.event.text.toLowerCase();
                 if (message.includes("qa") || message.includes("staging")) {
                     if (message.includes("free") || message.includes("available") || message.includes("using")) {
                         response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
 
-                        var request = require('request');
                         token = 'Bearer ' + token.token;
                         console.log(token);
                         request({
@@ -276,6 +274,7 @@ exports.handle_slack_message = function(req, res, next) {
                             }
                             console.log('we GOOD!');
                             console.log(body);
+                            
                         });
                     }
                 }
@@ -286,6 +285,7 @@ exports.handle_slack_message = function(req, res, next) {
           });
         }
     });
+    res.status(200).end();
 }
   
 function getTicketStatus(ticket, cookie) {
