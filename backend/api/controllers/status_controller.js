@@ -248,7 +248,7 @@ exports.handle_slack_message = function(req, res, next) {
         token = token[0];
 
         if (payload.event !== undefined) {
-            if (payload.event.type === 'message' && payload.event.text !== '' && payload.event.user_name != 'Slack API Tester') {
+            if (payload.event.type === 'message' && payload.event.text !== '' && payload.event.username != 'Slack API Tester') {
                 var message = payload.event.text.toLowerCase();
                 if (message.includes("qa") || message.includes("staging")) {
                     if (message.includes("free") || message.includes("available") || message.includes("using")) {
