@@ -259,42 +259,43 @@ exports.handle_slack_message = function(req, res, next) {
         }
 
         token = token[0];
-    });
 
-    if (payload.event.type === 'message') {
-        var message = payload.event.text.toLowerCase();
-        if (message.includes("qa") || message.includes("staging")) {
-            if (message.includes("free") || message.includes("available") || message.includes("using")) {
-                response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
+        if (payload.event.type === 'message') {
+            var message = payload.event.text.toLowerCase();
+            if (message.includes("qa") || message.includes("staging")) {
+                if (message.includes("free") || message.includes("available") || message.includes("using")) {
+                    response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
 
-                var request = require('request');
-                token = 'Bearer' + token;
-                console.log(token);
-                request({
-                    uri: 'https://slack.com/api/chat.postMessage',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8',
-                        'Authorization': token
-                    },
-                    body: JSON.stringify({
-                        text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
-                        channel: payload.channel
-                    }),
-                    method: 'POST'
-                }, function (err, res, body) {
-                    //it works!
-                    if (err) {
-                        console.log(err);
-                    }
-                    console.log('we GOOD!');
-                    console.log(body);
-                });
+                    var request = require('request');
+                    token = 'Bearer' + token;
+                    console.log(token);
+                    request({
+                        uri: 'https://slack.com/api/chat.postMessage',
+                        headers: {
+                            'Content-Type': 'application/json; charset=utf-8',
+                            'Authorization': token
+                        },
+                        body: JSON.stringify({
+                            text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
+                            channel: payload.channel
+                        }),
+                        method: 'POST'
+                    }, function (err, res, body) {
+                        //it works!
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log('we GOOD!');
+                        console.log(body);
+
+                        // Respond to this event with HTTP 200 status
+                        res.json({
+                            challenge: payload.challenge,
+                            response_text: response_text
+                        });
+                    });
+                }
             }
         }
-    }
-    // Respond to this event with HTTP 200 status
-    res.json({
-        challenge: payload.challenge,
-        response_text: response_text
     });
 }
