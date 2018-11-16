@@ -293,6 +293,7 @@ exports.handle_slack_message = function(req, res, next) {
 
 
                             // Respond to this event with HTTP 200 status
+                            res.send(200);
                         });
                     }
                 }
