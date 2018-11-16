@@ -249,8 +249,6 @@ exports.handle_slack_message = function(req, res, next) {
     var payload = req.body;
     console.log(payload);
 
-    res.send(200);
-
     var response_text = '';
 
     var token = '';
