@@ -261,6 +261,32 @@ exports.handle_slack_message = function(req, res, next) {
                         }
                     }
                 );
+
+                request.post(
+                    'https://slack.com/api/chat.postMessage',
+                    {
+                        text: response_text,
+                        token: 'xoxp-15043497861-363366013268-481002907280-211755f729a08f3631095744c57c25d6'
+                    },
+                    function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            console.log(body);
+                        }
+                    }
+                );
+
+                request.post(
+                    'https://slack.com/api/chat.postMessage',
+                    {
+                        text: response_text,
+                        token: 'xoxb-15043497861-481939918501-Nr5xSSdy39qu5JDknKaYrcUl'
+                    },
+                    function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            console.log(body);
+                        }
+                    }
+                );
             }
         }
     }
