@@ -247,5 +247,8 @@ exports.handle_slack_message = function(req, res, next) {
             }
         }
     }
-    res.json(response_text);
+    res.json({
+        challenge: req.body.challenge,
+        value: response_text
+    });
 }
