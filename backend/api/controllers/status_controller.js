@@ -263,10 +263,11 @@ exports.handle_slack_message = function(req, res, next) {
                                 'Content-Type': 'application/json; charset=utf-8',
                                 'Authorization': token
                             },
-                            body: JSON.stringify({
+                            json:{
                                 text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
-                                channel: payload.event.channel
-                            }),
+                                channel: payload.event.channel,
+                                username: 'FreeQA Bot'
+                            },
                             method: 'POST'
                         }, function (err, resss, body) {
                             //it works!
