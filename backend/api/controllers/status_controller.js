@@ -251,7 +251,10 @@ exports.handle_slack_message = function(req, res, next) {
 
                 request.post(
                     'https://slack.com/api/chat.postMessage',
-                    { text: response_text },
+                    {
+                        text: response_text,
+                        token: payload.token
+                    },
                     function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             console.log(body);
