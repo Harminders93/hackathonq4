@@ -4,7 +4,7 @@
     <service
       v-for="s in ticket.services"
       v-bind:service="s"
-      v-bind:status="status"
+      v-bind:status="ticket.status"
       v-bind:key="s.name">
     </service>
   </div>  
@@ -14,11 +14,6 @@
   import Service from './Service.vue'
 
   export default {
-    data() {
-      return {
-       status: 'IN_PROGRESS'
-      }
-    },
     name: 'Ticket',
     props: {
       ticket: Object

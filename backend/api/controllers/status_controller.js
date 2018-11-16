@@ -3,6 +3,10 @@
 var mongoose = require('mongoose'),
     EnvironmentStatus = mongoose.model('EnvironmentStatus'),
     AuthorizationToken = mongoose.model('AuthorizationToken');
+    TicketService = require('../services/ticket_service'),
+    request = require('request'),
+    rp = require('request-promise'),
+    q = require('q');
 
 var qaMockData = {
     domain_name: 'QA',
@@ -105,7 +109,7 @@ exports.get_environment_status = function(req, res) {
                 }
                 res.json({
                     name: req.params.environmentName,
-                    tickets: getTicketArrayFromStatuses(environmentStatuses)
+                    tickets: TicketService.getTicketArrayFromStatuses(environmentStatuses)
                 });
         });
     } else {
@@ -131,72 +135,53 @@ exports.get_full_status = function(req, res) {
                 return element.domain_name === 'qa';
             });
 
-            qaStatuses = getTicketArrayFromStatuses(qaStatuses);
+            var qaTickets = TicketService.getTicketArrayFromStatuses(qaStatuses);
 
             var stagingStatuses = environmentStatuses.filter(function(element) {
                return element.domain_name === 'staging';
             });
 
-            stagingStatuses = getTicketArrayFromStatuses(stagingStatuses);
+            var stagingTickets = TicketService.getTicketArrayFromStatuses(stagingStatuses);
 
-            var finalResponse = [
-                {
-                    name: 'QA',
-                    tickets: qaStatuses
-                },
-                {
-                    name: 'Staging',
-                    tickets: stagingStatuses
-                }
-            ]
+            var jiraCookie = null;
+            request(
+              {
+                method: 'POST',
+                url: 'https://tools.crowdtwist.com/issues/rest/auth/1/session', 
+                json: {username:'dkarten', password:'wYXvQ5tz6VdB2GQ$JrAJ'}
+              }, function(err, response, body) {
+                  jiraCookie = body.session.name+'='+body.session.value;
+                  var promises = [];
+                  var numQaTix = qaTickets.length;
+                  for (var i=0; i<numQaTix; i++) {
+                    var ticket = qaTickets[i];
+                    promises.push(getTicketStatus(ticket, jiraCookie));  
+                  }
 
-            res.json(finalResponse);
+                  var numStagingTix = stagingTickets.length;
+                  for (var i=0; i<numStagingTix; i++) {
+                    var ticket = stagingTickets[i];
+                    promises.push(getTicketStatus(ticket, jiraCookie));  
+                  }
 
-    });
-};
-
-function getTicketArrayFromStatuses(statuses) {
-    var finalStatuses = [];
-
-    statuses.forEach(function(status) {
-        var isExisting = false;
-
-        // Get ticket number
-        var statusTicketNumber = getTicketNumber(status.branch_name);
-
-        var statusToAdd = {
-            "name": status.service_name,
-            "deployment_date": status.deployment_date,
-            "deployed_by": status.deployment_user,
-            "branch": status.branch_name
-        };
-        finalStatuses.forEach(function(existingStatus) {
-           if (existingStatus.name === statusTicketNumber) {
-               existingStatus.services.push(statusToAdd);
-               isExisting = true;
-           }
-        });
-
-        if (!isExisting) {
-            finalStatuses.push(
-                {
-                    "name": statusTicketNumber,
-                    "services": [
-                        statusToAdd
+                  console.log(promises);
+                  q.all(promises).then(function(data) {
+                    console.log('all promises resolved!');
+                    var finalResponse = [
+                        {
+                            name: 'QA',
+                            tickets: qaTickets
+                        },
+                        {
+                            name: 'Staging',
+                            tickets: stagingTickets
+                        }
                     ]
-                }
-            );
-        }
 
-    });
-
-    return finalStatuses;
-}
-
-function getTicketNumber(branchName) {
-    var words = branchName.split('-');
-    return words[0].toUpperCase() + '-' + words[1];
-}
+                    return res.json(finalResponse);
+                  })
+              });
+};
 
 exports.add_new_status = function(req, res) {
     var newEnvironmentStatus = new EnvironmentStatus(req.body);
@@ -304,4 +289,19 @@ exports.handle_slack_message = function(req, res, next) {
             challenge: payload.challenge,
         });
     });
+  
+function getTicketStatus(ticket, cookie) {
+  var endpoint = 'https://tools.crowdtwist.com/issues/rest/api/latest/issue/' + ticket.name.trim();
+  console.log('requesting endpoint ' + endpoint);
+  return rp.get({
+    uri: endpoint,
+    headers: {
+      cookie: cookie
+    },
+    json:true
+  }).then(function(response){
+    console.log('got ticket ' + ticket.name);
+    ticket.status = response.fields.status.name;
+    return ticket;
+  });
 }

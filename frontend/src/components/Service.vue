@@ -15,9 +15,9 @@
     methods: {
       getClass: function () {
         var status = 'in-progress';
-              if (this.status === 'RESOLVED') {
+        if (this.status === 'Resolved' || this.status === 'Closed') {
           status = 'resolved';
-        } else if (this.status === 'REJECTED') {
+        } else if (this.status === 'Reopened') {
           status = 'rejected';
         }
         return status;

@@ -9,10 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "mongod": "^2.0.0",
     "mongoose": "^5.3.12",
-    "nodemon": "^1.18.6"
+    "nodemon": "^1.18.6",
+    "q": "^1.5.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
   }
 }
