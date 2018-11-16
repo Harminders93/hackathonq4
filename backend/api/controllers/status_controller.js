@@ -260,7 +260,7 @@ exports.handle_slack_message = function(req, res, next) {
 
         token = token[0];
 
-        if (payload.event.type === 'message') {
+        if (payload.event.type === 'message' && payload.event.text !== '') {
             var message = payload.event.text.toLowerCase();
             if (message.includes("qa") || message.includes("staging")) {
                 if (message.includes("free") || message.includes("available") || message.includes("using")) {
@@ -296,7 +296,6 @@ exports.handle_slack_message = function(req, res, next) {
 
         res.json({
             challenge: payload.challenge,
-            response_text: response_text
         });
     });
 }
