@@ -16,4 +16,7 @@ module.exports = function(app) {
     // Returns the status of all environments
     app.route('/status/:environmentName')
         .get(statusController.get_status);
+
+    app.route('/slack')
+        .post(statusController.handle_slack_message);
 };
