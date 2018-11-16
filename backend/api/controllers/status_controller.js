@@ -246,6 +246,18 @@ exports.handle_slack_message = function(req, res, next) {
         if (message.includes("qa") || message.includes("staging")) {
             if (message.includes("free") || message.includes("available") || message.includes("using")) {
                 response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
+
+                var request = require('request');
+
+                request.post(
+                    'https://slack.com/api/chat.postMessage',
+                    { text: response_text },
+                    function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            console.log(body);
+                        }
+                    }
+                );
             }
         }
     }
