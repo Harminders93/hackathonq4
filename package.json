@@ -3,5 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "start": "nodemon backend/server.js"
+  },
+  "dependencies": {
+    "nodemon": "^1.18.6"
   }
 }
