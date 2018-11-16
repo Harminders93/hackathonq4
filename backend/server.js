@@ -8,8 +8,8 @@ var express = require('express'),
 
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/EnvironmentStatusDb');
-
+//mongoose.connect('mongodb://localhost/EnvironmentStatusDb');
+mongoose.connect('mongodb://heroku_0kl8frdl:d5bl93c3u6a257ocjngedpnnus@ds163226.mlab.com:63226/heroku_0kl8frdl');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
