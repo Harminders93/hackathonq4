@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    EnvironmentStatus = mongoose.model('EnvironmentStatus');
+    EnvironmentStatus = mongoose.model('EnvironmentStatus'),
+    AuthorizationToken = mongoose.model('AuthorizationToken');
 
 var qaMockData = {
     domain_name: 'QA',
@@ -241,6 +242,16 @@ exports.handle_slack_message = function(req, res, next) {
 
     var response_text = '';
 
+    var token = '';
+
+    AuthorizationToken.find({}, function(err, token) {
+        if (err) {
+            res.send(err);
+        }
+
+        token = token[0];
+    });
+
     if (payload.event.type === 'message') {
         var message = payload.event.text.toLowerCase();
         if (message.includes("qa") || message.includes("staging")) {
@@ -249,18 +260,24 @@ exports.handle_slack_message = function(req, res, next) {
 
                 var request = require('request');
 
-                request.post(
-                    'https://slack.com/api/chat.postMessage',
-                    {
-                        text: response_text,
-                        token: payload.token
+                request({
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                        'Authorization': 'Bearer ' + token
                     },
-                    function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            console.log(body);
-                        }
+                    uri: 'https://slack.com/api/chat.postMessage',
+                    body: {
+                        text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
+                        channel: payload.channel
+                    },
+                    method: 'POST'
+                }, function (err, res, body) {
+                    //it works!
+                    if (err) {
+                        console.log(err);
                     }
-                );
+                    console.log('we GOOD!');
+                });
             }
         }
     }
