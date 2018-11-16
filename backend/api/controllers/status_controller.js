@@ -238,17 +238,7 @@ exports.handle_slack_message = function(req, res, next) {
     // Get event payload
     var payload = req.body;
     // Respond to this event with HTTP 200 status
-    res.sendStatus(200);
-    var response_text = '';
-    if (payload.type === "message") {
-        if (payload.text.toLowerCase().includes("qa")) {
-            if (payload.text.toLowerCase().includes("free") || payload.text.toLowerCase().includes("using") || payload.text.toLowerCase().includes("available")) {
-                response_text = "Click here to find out - https://is-qa-free.herokuapp.com/";
-            }
-        }
-    }
-    res.send({
+    res.json({
         challenge: req.body.challenge,
-        value: response_text
     });
 }
