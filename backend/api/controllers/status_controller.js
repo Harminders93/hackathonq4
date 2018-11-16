@@ -235,8 +235,7 @@ exports.handle_slack_message = function(req, res, next) {
     var payload = req.body;
     console.log(payload);
 
-    res.sendStatus(200);
-
+    res.status(200);
     var response_text = '';
 
     var token = '';
@@ -249,6 +248,7 @@ exports.handle_slack_message = function(req, res, next) {
         token = token[0];
 
         if (payload.event !== undefined) {
+          res.send('');
             if (payload.event.type === 'message' && payload.event.text !== '') {
                 var message = payload.event.text.toLowerCase();
                 if (message.includes("qa") || message.includes("staging")) {
@@ -280,11 +280,11 @@ exports.handle_slack_message = function(req, res, next) {
                     }
                 }
             }
-        }
-
-        res.json({
+        } else {
+          res.json({
             challenge: payload.challenge,
-        });
+          });
+        }
     });
 }
   
