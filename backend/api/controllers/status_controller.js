@@ -266,7 +266,7 @@ exports.handle_slack_message = function(req, res, next) {
                                 channel: payload.event.channel
                             }),
                             method: 'POST'
-                        }, function (err, res, body) {
+                        }, function (err, resss, body) {
                             //it works!
                             if (err) {
                                 console.log(err);
