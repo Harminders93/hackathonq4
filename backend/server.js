@@ -16,14 +16,14 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
+var routes = require('./api/routes/status_routes');
+routes(app);
+
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 app.get('*', (_req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
-
-var routes = require('./api/routes/status_routes');
-routes(app);
 
 app.listen(port);
 
