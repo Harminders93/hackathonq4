@@ -287,6 +287,7 @@ exports.handle_slack_message = function(req, res, next) {
             challenge: payload.challenge,
         });
     });
+}
   
 function getTicketStatus(ticket, cookie) {
   var endpoint = 'https://tools.crowdtwist.com/issues/rest/api/latest/issue/' + ticket.name.trim();
