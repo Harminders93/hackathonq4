@@ -19,4 +19,7 @@ module.exports = function(app) {
 
     app.route('/slack')
         .post(statusController.handle_slack_message);
+
+    app.route('/save-token')
+        .post(statusController.add_token);
 };

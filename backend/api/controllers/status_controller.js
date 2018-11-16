@@ -235,6 +235,15 @@ exports.add_new_status = function(req, res) {
     );
 }
 
+exports.add_token = function(req, res) {
+    var authorizationToken = new AuthorizationToken(req.body);
+    authorizationToken.save(function(err, authToken) {
+        if (err)
+            res.send(err);
+        res.json("Successfully saved the token.");
+    });
+}
+
 exports.handle_slack_message = function(req, res, next) {
     // Get event payload
     var payload = req.body;
@@ -261,11 +270,11 @@ exports.handle_slack_message = function(req, res, next) {
                 var request = require('request');
 
                 request({
+                    uri: 'https://slack.com/api/chat.postMessage',
                     headers: {
                         'Content-Type': 'application/json; charset=utf-8',
                         'Authorization': 'Bearer ' + token
                     },
-                    uri: 'https://slack.com/api/chat.postMessage',
                     body: {
                         text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
                         channel: payload.channel
