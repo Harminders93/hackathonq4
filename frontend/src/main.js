@@ -4,7 +4,7 @@ import axios from 'axios'
 
 Vue.config.productionTip = false
 
-axios.defaults.baseURL = 'http://localhost:5002'
+axios.defaults.baseURL = 'https://is-qa-free.herokuapp.com/'
 
 new Vue({
   render: h => h(App),
