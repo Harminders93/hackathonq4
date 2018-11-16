@@ -248,6 +248,7 @@ exports.handle_slack_message = function(req, res, next) {
         token = token[0];
 
         if (payload.event !== undefined) {
+            res.status(200).end();
             if (payload.event.type === 'message' && payload.event.text !== '' && payload.event.username != 'Slack API Tester') {
                 var message = payload.event.text.toLowerCase();
                 if (message.includes("qa") || message.includes("staging")) {
@@ -285,7 +286,6 @@ exports.handle_slack_message = function(req, res, next) {
           });
         }
     });
-    res.status(200).end();
 }
   
 function getTicketStatus(ticket, cookie) {
