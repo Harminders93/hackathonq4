@@ -179,7 +179,7 @@ exports.get_full_status = function(req, res) {
                     ]
 
                     return res.json(finalResponse);
-                  })
+                  });
               });
 };
 
@@ -276,7 +276,7 @@ exports.handle_slack_message = function(req, res, next) {
 
 
                             // Respond to this event with HTTP 200 status
-                            res.send(200);
+                            res.json('we gucci');
                         });
                     }
                 }
