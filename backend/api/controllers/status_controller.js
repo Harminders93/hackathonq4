@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    EnvironmentStatus = mongoose.model('EnvironmentStatus');
+    EnvironmentStatus = mongoose.model('EnvironmentStatus'),
+    AuthorizationToken = mongoose.model('AuthorizationToken');
 
 var qaMockData = {
     domain_name: 'QA',
@@ -232,4 +233,75 @@ exports.add_new_status = function(req, res) {
             }
         }
     );
+}
+
+exports.add_token = function(req, res) {
+    var authorizationToken = new AuthorizationToken(req.body);
+    authorizationToken.save(function(err, authToken) {
+        if (err)
+            res.send(err);
+        res.json("Successfully saved the token.");
+    });
+}
+
+exports.handle_slack_message = function(req, res, next) {
+    // Get event payload
+    var payload = req.body;
+    console.log(payload);
+
+    res.send(200);
+
+    var response_text = '';
+
+    var token = '';
+
+    AuthorizationToken.find({}, function(err, token) {
+        if (err) {
+            res.send(err);
+        }
+
+        token = token[0];
+
+        if (payload.event !== undefined) {
+            if (payload.event.type === 'message' && payload.event.text !== '') {
+                var message = payload.event.text.toLowerCase();
+                if (message.includes("qa") || message.includes("staging")) {
+                    if (message.includes("free") || message.includes("available") || message.includes("using")) {
+                        response_text = 'Click here to find out ya goober - https://is-qa-free.herokuapp.com/';
+
+                        var request = require('request');
+                        token = 'Bearer ' + token.token;
+                        console.log(token);
+                        request({
+                            uri: 'https://slack.com/api/chat.postMessage',
+                            headers: {
+                                'Content-Type': 'application/json; charset=utf-8',
+                                'Authorization': token
+                            },
+                            body: JSON.stringify({
+                                text: 'Click here for more information - https://is-qa-free.herokuapp.com/',
+                                channel: payload.event.channel
+                            }),
+                            method: 'POST'
+                        }, function (err, res, body) {
+                            //it works!
+                            if (err) {
+                                console.log(err);
+                            }
+                            console.log('we GOOD!');
+                            console.log(body);
+
+
+                            // Respond to this event with HTTP 200 status
+                            res.send(200);
+                        });
+                    }
+                }
+            }
+        }
+
+        res.json({
+            challenge: payload.challenge,
+        });
+    });
 }

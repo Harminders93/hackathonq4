@@ -2,6 +2,7 @@ var express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
     Status = require('./api/models/status_model'),
+    Token = require('./api/models/authorization_token')
     port = process.env.PORT || 5002,
     cors = require('cors')
     bodyParser = require('body-parser'),
