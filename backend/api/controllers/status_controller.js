@@ -237,6 +237,7 @@ exports.add_new_status = function(req, res) {
 exports.handle_slack_message = function(req, res, next) {
     // Get event payload
     var payload = req.body;
+    console.log(payload);
     // Respond to this event with HTTP 200 status
     res.json({
         challenge: req.body.challenge,
