@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose'),
     EnvironmentStatus = mongoose.model('EnvironmentStatus'),
-    AuthorizationToken = mongoose.model('AuthorizationToken');
+    AuthorizationToken = mongoose.model('AuthorizationToken'),
     TicketService = require('../services/ticket_service'),
     request = require('request'),
     rp = require('request-promise'),
@@ -181,7 +181,8 @@ exports.get_full_status = function(req, res) {
                     return res.json(finalResponse);
                   })
               });
-};
+    });
+}
 
 exports.add_new_status = function(req, res) {
     var newEnvironmentStatus = new EnvironmentStatus(req.body);
